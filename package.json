@@ -1,0 +1,16 @@
+{
+    "name": "hello",
+    "version": "0.0.1",
+    "description": "Hello World",
+    "homepage": "https://github.com/Ducharme/helloWorldDockerizedlambda",
+    "keywords": [
+        "aws"
+    ],
+    "author": "Claude Ducharme",
+    "license": "MIT",
+    "main": "./main.js",
+    "scripts": {
+        "start": "node main.js"
+    },
+    "dependencies": {}
+}

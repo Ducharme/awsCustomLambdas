@@ -1,9 +1,9 @@
-#FROM node:18-alpine3.17
+FROM node:18-alpine3.17
 #FROM public.ecr.aws/lambda/nodejs:18
 #RUN mkdir -p /home/node/app
 #RUN chown -R node:node /home/node/app
 #WORKDIR /home/node/app
-COPY *.js package.json ./
+COPY *.js package*.json ./
 RUN npm install
 
 #USER node

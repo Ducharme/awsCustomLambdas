@@ -1,0 +1,15 @@
+FROM node:18-alpine3.17
+RUN mkdir -p /home/node/app
+WORKDIR /home/node/app
+COPY *.js package*.json ./
+
+#ENTRYPOINT ["node", "index.js"]
+ENTRYPOINT [ "/home/node/app/index.js" ]
+CMD ["index.handler"]
+
+#FROM node:alpine
+#RUN apk add --no-cache libc6-compat
+#RUN mkdir -p /var/task
+#WORKDIR /var/task
+#COPY . .
+#ENTRYPOINT ["/usr/local/bin/aws-lambda-rie", "/usr/local/bin/node", "index.js"]

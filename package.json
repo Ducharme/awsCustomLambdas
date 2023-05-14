@@ -8,7 +8,7 @@
     ],
     "author": "Claude Ducharme",
     "license": "MIT",
-    "main": "./main.js",
+    "main": "index.js",
     "scripts": {
         "start": "node main.js"
     },

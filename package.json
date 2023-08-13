@@ -1,6 +1,6 @@
 {
     "name": "hello",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "description": "Hello World",
     "homepage": "https://github.com/Ducharme/helloWorldDockerizedlambda",
     "keywords": [

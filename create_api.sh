@@ -1,14 +1,15 @@
 #!/bin/sh
 
-API_NAME=my-hello-api
-IMAGE_REPO_NAME=my-hello-lambda
+. ./set_common_env-vars.sh
+
+
 STAGE_NAME=dev
 ROUTE_VERB=POST
 ROUTE_NAME=resource
 
 AWS_DEFAULT_REGION=$(aws configure get region)
 AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query "Account" --output text)
-LAMBDA_ARN=arn:aws:lambda:$AWS_DEFAULT_REGION:$AWS_ACCOUNT_ID:function:$IMAGE_REPO_NAME
+LAMBDA_ARN=arn:aws:lambda:$AWS_DEFAULT_REGION:$AWS_ACCOUNT_ID:function:$LAMBDA_FCN_NAME
 
 
 aws apigatewayv2 create-api --name $API_NAME --protocol-type HTTP --target $LAMBDA_ARN
@@ -23,11 +24,14 @@ aws apigatewayv2 create-route --api-id $API_ID --route-key "$ROUTE_VERB /$ROUTE_
 aws apigatewayv2 create-stage --api-id $API_ID --stage-name $STAGE_NAME --auto-deploy
 
 aws lambda add-permission \
- --statement-id "ApiGwInvokeFunction$RANDOM$RANDOM" \
- --action lambda:InvokeFunction \
- --function-name "arn:aws:lambda:$AWS_DEFAULT_REGION:$AWS_ACCOUNT_ID:function:$IMAGE_REPO_NAME" \
- --principal apigateway.amazonaws.com \
- --source-arn "arn:aws:execute-api:$AWS_DEFAULT_REGION:$AWS_ACCOUNT_ID:$API_ID/*/*/$ROUTE_NAME"
+  --statement-id "ApiGwInvokeFunction$RANDOM$RANDOM" \
+  --action lambda:InvokeFunction \
+  --function-name "$LAMBDA_ARN" \
+  --principal apigateway.amazonaws.com \
+  --source-arn "arn:aws:execute-api:$AWS_DEFAULT_REGION:$AWS_ACCOUNT_ID:$API_ID/*/*/$ROUTE_NAME"
 
 sleep 5
-curl -X $ROUTE_VERB $API_EP/$ROUTE_NAME -d '{"mode": "my-value"}'
+curl -X $ROUTE_VERB $API_EP/$ROUTE_NAME -d '{"mode": "my-value-1"}'
+echo ""
+curl -X $ROUTE_VERB $API_EP/$STAGE_NAME/$ROUTE_NAME -d '{"mode": "my-value-2"}'
+echo ""

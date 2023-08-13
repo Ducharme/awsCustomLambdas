@@ -1,7 +1,7 @@
 #!/bin/sh
 
-IMAGE_REPO_NAME=my-hello-lambda
-IMAGE_TAG=latest
+. ./set_common_env-vars.sh
+
 
 RIE_PKG=https://github.com/aws/aws-lambda-runtime-interface-emulator/releases/latest/download/aws-lambda-rie
 RIE_DIR=~/.aws-lambda-rie
@@ -18,7 +18,8 @@ docker run -d -v $RIE_DIR:/aws-lambda -p 9000:8080 \
     --entrypoint /aws-lambda/aws-lambda-rie \
     $IMAGE_REPO_NAME:$IMAGE_TAG /usr/local/bin/npx aws-lambda-ric index.handler
 
-sleep 5 && curl "http://localhost:9000/2015-03-31/functions/function/invocations" -d '{"mode": "my-value"}'
+sleep 5
+curl "http://localhost:9000/2015-03-31/functions/function/invocations" -d '{"mode": "my-value"}'
 
 echo ""
 CONTAINER_ID=$(docker ps | grep $IMAGE_REPO_NAME:$IMAGE_TAG | cut -d ' ' -f1)

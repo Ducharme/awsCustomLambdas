@@ -1,9 +1,11 @@
 #!/bin/sh
 
-IMAGE_REPO_NAME=my-hello-lambda
-IMAGE_TAG=latest
+. ./set_common_env-vars.sh
 
-aws lambda invoke --function-name $IMAGE_REPO_NAME ./response.json
+
+aws lambda invoke --function-name $LAMBDA_FCN_NAME \
+    --cli-binary-format raw-in-base64-out \
+    --payload '{ "mode": "my-value" }' ./response.json
 
 cat ./response.json
 echo ""

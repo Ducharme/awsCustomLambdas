@@ -1,0 +1,26 @@
+ARG FUNCTION_DIR=/var/task
+ARG RUNTIME_DIR=/var/runtime
+
+FROM ubuntu:22.10
+
+ARG FUNCTION_DIR
+ARG RUNTIME_DIR
+
+RUN mkdir -p ${FUNCTION_DIR}
+WORKDIR ${FUNCTION_DIR}
+
+RUN apt-get update && apt-get install -y curl
+RUN curl -Lo aws-lambda-rie https://github.com/aws/aws-lambda-runtime-interface-emulator/releases/latest/download/aws-lambda-rie
+RUN chmod +x aws-lambda-rie
+
+COPY ./shell_runtime/bootstrap ${FUNCTION_DIR}/bootstrap
+COPY ./shell_runtime/function.sh ${FUNCTION_DIR}/function.sh
+RUN chmod +x ${FUNCTION_DIR}/bootstrap
+RUN chmod +x ${FUNCTION_DIR}/function.sh
+
+ENV LAMBDA_TASK_ROOT=${FUNCTION_DIR}
+ENV LAMBDA_RUNTIME_DIR=${RUNTIME_DIR}
+#ENV NPM_CONFIG_CACHE=/tmp/.npm
+
+ENTRYPOINT ["./bootstrap"]
+CMD ["function.handler"]

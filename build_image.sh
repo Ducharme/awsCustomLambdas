@@ -15,12 +15,12 @@ else
 fi
 
 
-docker build -t $IMAGE_REPO_NAME:$IMAGE_TAG .
+docker build -f $DOCKERFILE -t $IMAGE_REPO_NAME:$IMAGE_TAG .
 docker tag $IMAGE_REPO_NAME:$IMAGE_TAG $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG
 docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG
 
 # Refresh the docker image for the function otherwise old code might still execute for a while
 LST_FCN=$(aws lambda list-functions | grep "FunctionName" | grep "$LAMBDA_FCN_NAME" | cut -d ':' -f2 |  tr -d '" ,')
-if [ "$LST_FCN" = "$IMAGE_REPO_NAME" ]; then
+if [ "$LST_FCN" = "$LAMBDA_FCN_NAME" ]; then
     aws lambda update-function-code --function-name $LAMBDA_FCN_NAME --image-uri $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG
 fi

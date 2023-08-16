@@ -1,5 +1,3 @@
-# https://docs.aws.amazon.com/lambda/latest/dg/nodejs-image.html#nodejs-image-clients
-
 # Define custom function directory
 ARG FUNCTION_DIR="/function"
 

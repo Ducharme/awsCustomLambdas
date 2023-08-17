@@ -10,7 +10,7 @@
 
 # Setup
 
-1. git clone https://github.com/Ducharme/helloWorldDockerizedlambda.git
+1. git clone https://github.com/Ducharme/awsCustomLambdas
 2. Update values in file `set_project_values.sh` (defaults are PROJECT_NAME=hello and DOCKERFILE=Dockerfile_ubuntu)
   * PROJECT_NAME: Lowercase string without space plus dash '-' char are valid
   * DOCKERFILE: **Dockerfile_aws** or **Dockerfile_bookworm** or **Dockerfile_ubuntu** or **NA** (for custom image from zip file)

@@ -11,7 +11,7 @@
 # Setup
 
 1. git clone https://github.com/Ducharme/helloWorldDockerizedlambda.git
-2. Update values in file `set_project_values.sh`
+2. Update values in file `set_project_values.sh` (defaults are PROJECT_NAME=hello and DOCKERFILE=Dockerfile_ubuntu)
   * PROJECT_NAME: Lowercase string without space plus dash '-' char are valid
   * DOCKERFILE: **Dockerfile_aws** or **Dockerfile_bookworm** or **Dockerfile_ubuntu** or **NA** (for custom image from zip file)
 3. `sh build_image.sh` (only for function using docker image)
@@ -29,10 +29,7 @@
 
 # Clean up
 
-Simply run to delete all resources at once
-```
-sh cleanup.sh
-```
+Simply run `sh cleanup.sh` to delete all resources at once
 * API Gateway / APIs (**$PROJECT_NAME**-api)
 * Lambda / Functions (**$PROJECT_NAME**-lambda)
 * Amazon ECR / Repositories (**$PROJECT_NAME**-repo)

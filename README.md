@@ -19,8 +19,8 @@
 5. `sh create_lambda.sh`
 6. `sh create_api.sh`
 
-# Test
 
+# Test
 
 6. `sh run_container_locally.sh` (only for function using docker image)
 7. `sh run_function_remotely.sh`
@@ -29,11 +29,16 @@
 
 # Clean up
 
+Simply run to delete all resources at once
+```
+sh cleanup.sh
+```
 * API Gateway / APIs (**$PROJECT_NAME**-api)
 * Lambda / Functions (**$PROJECT_NAME**-lambda)
 * Amazon ECR / Repositories (**$PROJECT_NAME**-repo)
 * IAM / Roles (**$PROJECT_NAME**-lambda-role)
 * CloudWatch / Log groups (/aws/lambda/**$PROJECT_NAME**-lambda)
+* CloudWatch / Log groups (/aws/apigw/**$PROJECT_NAME**-api)
 
 
 # Documentation

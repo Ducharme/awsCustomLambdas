@@ -19,5 +19,5 @@ do
   RESPONSE=$($(echo "$_HANDLER" | cut -d. -f2) "$EVENT_DATA")
 
   # Send the response
-  curl "http://${AWS_LAMBDA_RUNTIME_API}/2018-06-01/runtime/invocation/$REQUEST_ID/response" -d "$RESPONSE"
+  curl -sS -L "http://${AWS_LAMBDA_RUNTIME_API}/2018-06-01/runtime/invocation/$REQUEST_ID/response" -d "$RESPONSE"
 done

@@ -16,7 +16,7 @@ exports.handler = async function(event, context) {
     console.log("Hello, World! mode=" + mode);
     return {
       statusCode: 200,
-      body: JSON.stringify("Hello from Lambda! mode=" + mode)
+      body: "Hello from Lambda! mode=" + mode
     };
   } catch (error) {
     console.error("An hello occurred:", error);

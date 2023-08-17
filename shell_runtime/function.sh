@@ -1,12 +1,13 @@
 #!/bin/bash
 
-echo "Loading function from Amazon Linux 2"
+# NOTE: Avoid using echo without redirect
 
 function handler () {
-  echo "Executing handler function from Amazon Linux 2"
   EVENT_DATA=$1
   echo "$EVENT_DATA" 1>&2;
-  
+
+  # Should be valid json
+  #echo "{ \"isBase64Encoded\": false, \"statusCode\": \"200\", \"body\": \"{\"status\": \"OK\", \"statusCode\": \"200\"}\" }"
   RESPONSE="Echoing request: '$EVENT_DATA'"
   echo $RESPONSE
 }

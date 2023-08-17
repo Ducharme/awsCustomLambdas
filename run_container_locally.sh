@@ -31,7 +31,7 @@ docker run -d -v $RIE_DIR:/aws-lambda -p 9000:8080 \
 
 
 sleep 5
-curl "http://localhost:9000/2015-03-31/functions/function/invocations" -d '{"mode": "my-value"}'
+curl -sS -L "http://localhost:9000/2015-03-31/functions/function/invocations" -d '{"mode": "my-value"}'
 
 echo ""
 CONTAINER_ID=$(docker ps | grep $IMAGE_REPO_NAME:$IMAGE_TAG | cut -d ' ' -f1)

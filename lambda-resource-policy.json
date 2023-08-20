@@ -1,0 +1,17 @@
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "StatementId": "FunctionURLAllowPublicAccess",
+            "Effect": "Allow",
+            "Principal": "*",
+            "Action": "lambda:InvokeFunctionUrl",
+            "Resource": "arn:aws:lambda:$AWS_DEFAULT_REGION:$AWS_ACCOUNT_ID:function:$LAMBDA_FCN_NAME",
+            "Condition": {
+                "StringEquals": {
+                "lambda:FunctionUrlAuthType": "NONE"
+                }
+            }
+        }
+    ]
+}

@@ -25,9 +25,9 @@ else
 fi
 
 # replace "-d" by "-a stderr -a stdout" to debug
-docker run -d -v $RIE_DIR:/aws-lambda -p 9000:8080 \
-    --entrypoint /aws-lambda/aws-lambda-rie \
-    $IMAGE_REPO_NAME:$IMAGE_TAG $BOOTSRAP_FILE $HANDLER
+docker run -d -v $RIE_DIR:/aws-lambda -p 9000:8080 --entrypoint /aws-lambda/aws-lambda-rie $IMAGE_REPO_NAME:$IMAGE_TAG $BOOTSRAP_FILE $HANDLER
+#docker run -d -p 9000:8080 --entrypoint /var/task/aws-lambda-rie $IMAGE_REPO_NAME:$IMAGE_TAG ./bootstrap $HANDLER
+#docker run -d -p 9000:8080 --entrypoint /var/task/aws-lambda-rie $IMAGE_REPO_NAME:$IMAGE_TAG $HANDLER
 
 
 sleep 5

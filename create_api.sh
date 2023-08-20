@@ -29,21 +29,18 @@ echo "aws apigatewayv2 create-route --api-id $API_ID --route-key \"$ROUTE_VERB /
 aws apigatewayv2 create-route --api-id $API_ID --route-key "$ROUTE_VERB /$ROUTE_NAME" --target integrations/$INT_ID
 
 #https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-logging.html
-echo "aws apigatewayv2 create-stage --api-id $API_ID --stage-name $STAGE_NAME --auto-deploy --access-log-settings DestinationArn=arn:aws:logs:$AWS_DEFAULT_REGION:$AWS_ACCOUNT_ID:log-group:$API_LOG_GROUP,Format='$context.identity.sourceIp - - $context.requestTime $context.httpMethod $context.routeKey $context.protocol $context.status $context.responseLength $context.requestId'"
+echo "aws apigatewayv2 create-stage --api-id $API_ID --stage-name $STAGE_NAME --auto-deploy --access-log-settings DestinationArn=arn:aws:logs:$AWS_DEFAULT_REGION:$AWS_ACCOUNT_ID:log-group:$API_LOG_GROUP,Format='\$context.identity.sourceIp - - \$context.requestTime \$context.httpMethod \$context.routeKey \$context.protocol \$context.status \$context.responseLength \$context.requestId'"
 aws apigatewayv2 create-stage --api-id $API_ID --stage-name $STAGE_NAME --auto-deploy --access-log-settings DestinationArn=arn:aws:logs:$AWS_DEFAULT_REGION:$AWS_ACCOUNT_ID:log-group:$API_LOG_GROUP,Format='$context.identity.sourceIp - - $context.requestTime $context.httpMethod $context.routeKey $context.protocol $context.status $context.responseLength $context.requestId'
 
 
 echo "aws logs put-resource-policy --policy-name $PUT_LOG_POLICY --policy-document '{ "Version": "2012-10-17", "Statement": [ { "Effect": "Allow", "Principal": { "Service": [ "apigateway.amazonaws.com" ] }, "Action": [ "logs:CreateLogStream", "logs:PutLogEvents" ], "Resource": "arn:aws:logs:$AWS_DEFAULT_REGION:$AWS_ACCOUNT_ID:log-group:$API_LOG_GROUP:*" } ] }'"
 aws logs put-resource-policy --policy-name $PUT_LOG_POLICY --policy-document "{ \"Version\": \"2012-10-17\", \"Statement\": [ { \"Effect\": \"Allow\", \"Principal\": { \"Service\": [ \"apigateway.amazonaws.com\" ] }, \"Action\": [ \"logs:CreateLogStream\", \"logs:PutLogEvents\" ], \"Resource\": \"arn:aws:logs:$AWS_DEFAULT_REGION:$AWS_ACCOUNT_ID:log-group:$API_LOG_GROUP:*\" } ] }"
 
-aws lambda add-permission \
-  --statement-id "ApiGwInvokeFunction-$API_ID" \
-  --action lambda:InvokeFunction \
-  --function-name $LAMBDA_FCN_NAME \
-  --principal apigateway.amazonaws.com \
-  --source-arn "arn:aws:execute-api:$AWS_DEFAULT_REGION:$AWS_ACCOUNT_ID:$API_ID/*/*/$ROUTE_NAME"
-  # https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-lambda-authorizer.html
-  # "Resource": "arn:aws:execute-api:{regionId}:{accountId}:{apiId}/{stage}/{httpVerb}/[{resource}/[{child-resources}]]"
-  # --source-arn "arn:aws:execute-api:$AWS_DEFAULT_REGION:$AWS_ACCOUNT_ID:$API_ID/$STAGE_NAME/$ROUTE_VERB/$ROUTE_NAME"
-  # https://docs.aws.amazon.com/apigateway/latest/developerguide/arn-format-reference.html
-  # HTTP API and REST API endpoint -> arn:partition:execute-api:region:account-id:api-id/stage/http-method/resource-path
+
+echo "aws lambda add-permission --statement-id ApiGwInvokeFunction-$API_ID --action lambda:InvokeFunction --function-name $LAMBDA_FCN_NAME --principal apigateway.amazonaws.com --source-arn \"arn:aws:execute-api:$AWS_DEFAULT_REGION:$AWS_ACCOUNT_ID:$API_ID/*/*/$ROUTE_NAME\""
+aws lambda add-permission --statement-id ApiGwInvokeFunction-$API_ID --action lambda:InvokeFunction --function-name $LAMBDA_FCN_NAME --principal apigateway.amazonaws.com --source-arn "arn:aws:execute-api:$AWS_DEFAULT_REGION:$AWS_ACCOUNT_ID:$API_ID/*/*/$ROUTE_NAME"
+# https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-lambda-authorizer.html
+# "Resource": "arn:aws:execute-api:{regionId}:{accountId}:{apiId}/{stage}/{httpVerb}/[{resource}/[{child-resources}]]"
+# --source-arn "arn:aws:execute-api:$AWS_DEFAULT_REGION:$AWS_ACCOUNT_ID:$API_ID/$STAGE_NAME/$ROUTE_VERB/$ROUTE_NAME"
+# https://docs.aws.amazon.com/apigateway/latest/developerguide/arn-format-reference.html
+# HTTP API and REST API endpoint -> arn:partition:execute-api:region:account-id:api-id/stage/http-method/resource-path

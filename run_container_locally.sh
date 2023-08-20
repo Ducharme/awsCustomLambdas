@@ -25,14 +25,17 @@ else
 fi
 
 # replace "-d" by "-a stderr -a stdout" to debug
+echo "docker run -d -v $RIE_DIR:/aws-lambda -p 9000:8080 --entrypoint /aws-lambda/aws-lambda-rie $IMAGE_REPO_NAME:$IMAGE_TAG $BOOTSRAP_FILE $HANDLER"
 docker run -d -v $RIE_DIR:/aws-lambda -p 9000:8080 --entrypoint /aws-lambda/aws-lambda-rie $IMAGE_REPO_NAME:$IMAGE_TAG $BOOTSRAP_FILE $HANDLER
 #docker run -d -p 9000:8080 --entrypoint /var/task/aws-lambda-rie $IMAGE_REPO_NAME:$IMAGE_TAG ./bootstrap $HANDLER
 #docker run -d -p 9000:8080 --entrypoint /var/task/aws-lambda-rie $IMAGE_REPO_NAME:$IMAGE_TAG $HANDLER
 
 
 sleep 5
+echo "curl -sS -L "http://localhost:9000/2015-03-31/functions/function/invocations" -d '{"mode": "my-value"}'"
 curl -sS -L "http://localhost:9000/2015-03-31/functions/function/invocations" -d '{"mode": "my-value"}'
 
 echo ""
 CONTAINER_ID=$(docker ps | grep $IMAGE_REPO_NAME:$IMAGE_TAG | cut -d ' ' -f1)
+echo "docker kill $CONTAINER_ID"
 docker kill $CONTAINER_ID

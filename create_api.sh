@@ -34,16 +34,16 @@ aws apigatewayv2 create-stage --api-id $API_ID --stage-name $STAGE_NAME --auto-d
 
 
 echo "aws logs put-resource-policy --policy-name $PUT_LOG_POLICY --policy-document '{ "Version": "2012-10-17", "Statement": [ { "Effect": "Allow", "Principal": { "Service": [ "apigateway.amazonaws.com" ] }, "Action": [ "logs:CreateLogStream", "logs:PutLogEvents" ], "Resource": "arn:aws:logs:$AWS_DEFAULT_REGION:$AWS_ACCOUNT_ID:log-group:$API_LOG_GROUP:*" } ] }'"
-aws logs put-resource-policy --policy-name $PUT_LOG_POLICY --policy-document '{ "Version": "2012-10-17", "Statement": [ { "Effect": "Allow", "Principal": { "Service": [ "apigateway.amazonaws.com" ] }, "Action": [ "logs:CreateLogStream", "logs:PutLogEvents" ], "Resource": "arn:aws:logs:$AWS_DEFAULT_REGION:$AWS_ACCOUNT_ID:log-group:$API_LOG_GROUP:*" } ] }'
+aws logs put-resource-policy --policy-name $PUT_LOG_POLICY --policy-document "{ \"Version\": \"2012-10-17\", \"Statement\": [ { \"Effect\": \"Allow\", \"Principal\": { \"Service\": [ \"apigateway.amazonaws.com\" ] }, \"Action\": [ \"logs:CreateLogStream\", \"logs:PutLogEvents\" ], \"Resource\": \"arn:aws:logs:$AWS_DEFAULT_REGION:$AWS_ACCOUNT_ID:log-group:$API_LOG_GROUP:*\" } ] }"
 
-RANDOM_STR=$(tr -dc A-Za-z0-9 </dev/urandom | head -c 8 ; echo '')
 aws lambda add-permission \
   --statement-id "ApiGwInvokeFunction-$API_ID" \
   --action lambda:InvokeFunction \
-  --function-name $LAMBDA_ARN \
+  --function-name $LAMBDA_FCN_NAME \
   --principal apigateway.amazonaws.com \
-  --source-arn "arn:aws:execute-api:$AWS_DEFAULT_REGION:$AWS_ACCOUNT_ID:$API_ID/*/*/$LAMBDA_FCN_NAME"
-  #--source-arn "arn:aws:execute-api:$AWS_DEFAULT_REGION:$AWS_ACCOUNT_ID:$API_ID/*/*/$ROUTE_NAME"
-  #--source-arn "arn:aws:execute-api:$AWS_DEFAULT_REGION:$AWS_ACCOUNT_ID:$API_ID/$STAGE_NAME/$ROUTE_VERB/$ROUTE_NAME"
+  --source-arn "arn:aws:execute-api:$AWS_DEFAULT_REGION:$AWS_ACCOUNT_ID:$API_ID/*/*/$ROUTE_NAME"
   # https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-lambda-authorizer.html
   # "Resource": "arn:aws:execute-api:{regionId}:{accountId}:{apiId}/{stage}/{httpVerb}/[{resource}/[{child-resources}]]"
+  # --source-arn "arn:aws:execute-api:$AWS_DEFAULT_REGION:$AWS_ACCOUNT_ID:$API_ID/$STAGE_NAME/$ROUTE_VERB/$ROUTE_NAME"
+  # https://docs.aws.amazon.com/apigateway/latest/developerguide/arn-format-reference.html
+  # HTTP API and REST API endpoint -> arn:partition:execute-api:region:account-id:api-id/stage/http-method/resource-path

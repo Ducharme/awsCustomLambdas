@@ -10,11 +10,13 @@ RUN mkdir -p ${FUNCTION_DIR}
 WORKDIR ${FUNCTION_DIR}
 
 RUN apt-get update && apt-get install -y curl
-RUN curl -Lo aws-lambda-rie https://github.com/aws/aws-lambda-runtime-interface-emulator/releases/latest/download/aws-lambda-rie
-RUN chmod +x aws-lambda-rie
+RUN curl -Lo ${FUNCTION_DIR}/aws-lambda-rie https://github.com/aws/aws-lambda-runtime-interface-emulator/releases/latest/download/aws-lambda-rie
+RUN chmod +x ${FUNCTION_DIR}/aws-lambda-rie
 
+COPY ./shell_runtime/bootstrap ${FUNCTION_DIR}/entrypoint.sh
 COPY ./shell_runtime/bootstrap ${FUNCTION_DIR}/bootstrap
 COPY ./shell_runtime/function.sh ${FUNCTION_DIR}/function.sh
+RUN chmod +x ${FUNCTION_DIR}/entrypoint.sh
 RUN chmod +x ${FUNCTION_DIR}/bootstrap
 RUN chmod +x ${FUNCTION_DIR}/function.sh
 

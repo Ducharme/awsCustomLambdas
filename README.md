@@ -14,7 +14,7 @@
 2. Update values in file `set_project_values.sh` (defaults are PROJECT_NAME=hello and DOCKERFILE=Dockerfile_ubuntu)
   * PROJECT_NAME: Lowercase string without space plus dash '-' char are valid
   * DOCKERFILE: **Dockerfile_aws** or **Dockerfile_bookworm** or **Dockerfile_ubuntu** or **NA** (for custom image from zip file)
-3. `sh build_image.sh` (only for function using docker image)
+3. `sh build_image.sh` Note: Only for functions using docker image
 4. `sh create_role.sh`
 5. `sh create_lambda.sh`
 6. `sh create_api.sh`
@@ -22,9 +22,9 @@
 
 # Test
 
-6. `sh run_container_locally.sh` (only for function using docker image)
+6. `sh run_container_locally.sh` Note: Only for functions using docker image
 7. `sh run_function_remotely.sh`
-7. `sh run_function_from_apigw.sh` (works for nodejs but return 500 for ubuntu)
+8. `sh run_function_from_apigw.sh`
 
 
 # Clean up

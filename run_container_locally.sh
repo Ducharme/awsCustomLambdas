@@ -13,10 +13,16 @@ if [ ! -d "$RIE_DIR" ]; then
         chmod +x $RIE_DIR/aws-lambda-rie
 fi
 
+# https://docs.aws.amazon.com/lambda/latest/dg/images-create.html
+# https://docs.aws.amazon.com/lambda/latest/dg/images-test.html
+
 if [ "$DOCKERFILE" = "Dockerfile_ubuntu" ]; then
     BOOTSRAP_FILE=/var/task/bootstrap
     HANDLER=function.handler
-elif [ "$DOCKERFILE" = "Dockerfile_aws" ] || [ "$DOCKERFILE" = "Dockerfile_bookworm" ]; then
+elif [ "$DOCKERFILE" = "Dockerfile_aws" ]; then
+    BOOTSRAP_FILE="/lambda-entrypoint.sh"
+    HANDLER=index.handler
+elif [ "$DOCKERFILE" = "Dockerfile_bookworm" ]; then
     BOOTSRAP_FILE="/usr/local/bin/npx aws-lambda-ric"
     HANDLER=index.handler
 else
@@ -24,12 +30,13 @@ else
     exit 1
 fi
 
+
 # replace "-d" by "-a stderr -a stdout" to debug
 echo "docker run -d -v $RIE_DIR:/aws-lambda -p 9000:8080 --entrypoint /aws-lambda/aws-lambda-rie $IMAGE_REPO_NAME:$IMAGE_TAG $BOOTSRAP_FILE $HANDLER"
 docker run -d -v $RIE_DIR:/aws-lambda -p 9000:8080 --entrypoint /aws-lambda/aws-lambda-rie $IMAGE_REPO_NAME:$IMAGE_TAG $BOOTSRAP_FILE $HANDLER
 #docker run -d -p 9000:8080 --entrypoint /var/task/aws-lambda-rie $IMAGE_REPO_NAME:$IMAGE_TAG ./bootstrap $HANDLER
 #docker run -d -p 9000:8080 --entrypoint /var/task/aws-lambda-rie $IMAGE_REPO_NAME:$IMAGE_TAG $HANDLER
-
+# NOTE: Run "docker exec -t -i CONTAINER_ID /bin/bash" to list files inside container
 
 sleep 5
 echo "curl -sS -L "http://localhost:9000/2015-03-31/functions/function/invocations" -d '{"mode": "my-value"}'"

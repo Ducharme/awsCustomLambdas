@@ -3,6 +3,11 @@
 . ./set_common_env-vars.sh
 
 
+if [ "$DOCKERFILE" = "NA" ]; then
+    echo "There is no image to build, skipping..."
+    exit 0
+fi
+
 echo "aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com"
 aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
 

@@ -2,21 +2,23 @@
 
 exports.handler = async function(event, context) {
   try {
-    var mode = event.mode;
-    if (mode == undefined) {
+    console.log("Echoing event: " + JSON.stringify(event));
+
+    /*var data_payload = event.data_payload; // Use named element
+    if (data_payload == undefined) {
       if (event.body != undefined && event.body.length > 0) {
         var decoded = atob(event.body); // Base64
         if (decoded != undefined) {
           var parsed = JSON.parse(decoded);
-          mode = parsed.mode;
+          data_payload = parsed.data_payload;
         }
       }
-    }
+    }*/
 
-    console.log("Hello, World! mode=" + mode);
     return {
-      statusCode: 200,
-      body: "Hello from Lambda! mode=" + mode
+      "isBase64Encoded": false,
+      "statusCode": 200,
+      "body": JSON.stringify(event)
     };
   } catch (error) {
     console.error("An hello occurred:", error);

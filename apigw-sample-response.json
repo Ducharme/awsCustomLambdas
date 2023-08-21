@@ -1,0 +1,83 @@
+{
+  "version": "1.0",
+  "resource": "/resource",
+  "path": "/dev/resource",
+  "httpMethod": "POST",
+  "headers": {
+    "Content-Length": "22",
+    "Content-Type": "application/x-www-form-urlencoded",
+    "Host": "uf25wkeqnb.execute-api.us-east-1.amazonaws.com",
+    "User-Agent": "curl/7.68.0",
+    "X-Amzn-Trace-Id": "Root=1-64e3a4a8-614b8d2c201d14c1264dtb53",
+    "X-Forwarded-For": "186.35.31.46",
+    "X-Forwarded-Port": "443",
+    "X-Forwarded-Proto": "https",
+    "accept": "*/*"
+  },
+  "multiValueHeaders": {
+    "Content-Length": [
+      "22"
+    ],
+    "Content-Type": [
+      "application/x-www-form-urlencoded"
+    ],
+    "Host": [
+      "uf25wkeqnb.execute-api.us-east-1.amazonaws.com"
+    ],
+    "User-Agent": [
+      "curl/7.68.0"
+    ],
+    "X-Amzn-Trace-Id": [
+      "Root=1-64e3a4a8-614b8d2c201d14c1264dtb53"
+    ],
+    "X-Forwarded-For": [
+      "186.35.31.46"
+    ],
+    "X-Forwarded-Port": [
+      "443"
+    ],
+    "X-Forwarded-Proto": [
+      "https"
+    ],
+    "accept": [
+      "*/*"
+    ]
+  },
+  "queryStringParameters": null,
+  "multiValueQueryStringParameters": null,
+  "requestContext": {
+    "accountId": "141571238110",
+    "apiId": "uf25wkeqnb",
+    "domainName": "uf25wkeqnb.execute-api.us-east-1.amazonaws.com",
+    "domainPrefix": "uf25wkeqnb",
+    "extendedRequestId": "KBaqchrzSQ0EPNQ=",
+    "httpMethod": "POST",
+    "identity": {
+      "accessKey": null,
+      "accountId": null,
+      "caller": null,
+      "cognitoAmr": null,
+      "cognitoAuthenticationProvider": null,
+      "cognitoAuthenticationType": null,
+      "cognitoIdentityId": null,
+      "cognitoIdentityPoolId": null,
+      "principalOrgId": null,
+      "sourceIp": "186.35.31.46",
+      "user": null,
+      "userAgent": "curl/7.68.0",
+      "userArn": null
+    },
+    "path": "/dev/resource",
+    "protocol": "HTTP/1.1",
+    "requestId": "KBaqchrzSQ0EPNQ=",
+    "requestTime": "21/Aug/2023:17:53:44 +0000",
+    "requestTimeEpoch": 1692640424918,
+    "resourceId": "POST /resource",
+    "resourcePath": "/resource",
+    "stage": "dev"
+  },
+  "pathParameters": null,
+  "stageVariables": null,
+  "body": "eyAibW9kZSI6ICJteS12YWx1ZSIgfQ==",
+  "isBase64Encoded": true
+}

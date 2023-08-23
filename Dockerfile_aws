@@ -1,4 +1,4 @@
 FROM public.ecr.aws/lambda/nodejs:18
-COPY *.js package*.json ./
+COPY ./javascript_lambda/* ./
 RUN npm install
 CMD ["index.handler"]

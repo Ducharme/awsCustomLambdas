@@ -1,6 +1,7 @@
 #!/bin/sh
 
-# See README.md for valid values
+# Valid values also listed in README.md
+# Uncomment only one pair of values
 
 #export PROJECT_NAME=bonjour
 #export DOCKERFILE=Dockerfile_aws

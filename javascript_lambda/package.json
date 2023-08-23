@@ -1,11 +1,9 @@
 {
     "name": "hello",
-    "version": "0.0.2",
+    "version": "0.0.3",
     "description": "Hello World",
-    "homepage": "https://github.com/Ducharme/helloWorldDockerizedlambda",
-    "keywords": [
-        "aws"
-    ],
+    "homepage": "https://github.com/Ducharme/awsCustomLambdas",
+    "keywords": [ "aws" ],
     "author": "Claude Ducharme",
     "license": "MIT",
     "main": "index.js",

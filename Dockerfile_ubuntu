@@ -22,7 +22,6 @@ RUN chmod +x ${FUNCTION_DIR}/function.sh
 
 ENV LAMBDA_TASK_ROOT=${FUNCTION_DIR}
 ENV LAMBDA_RUNTIME_DIR=${RUNTIME_DIR}
-#ENV NPM_CONFIG_CACHE=/tmp/.npm
 
 ENTRYPOINT ["./bootstrap"]
 CMD ["function.handler"]

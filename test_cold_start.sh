@@ -2,8 +2,46 @@
 
 . ./set_common_env-vars.sh
 
-MAX=100
-WAIT=60
+MAX=10
+WAIT=30
+COLD_START=TRUE
+
+
+JSCODE=$(cat << EOF
+exports.handler = async function(event, context) {
+  try {
+    console.log("Echoing event #NO: " + JSON.stringify(event));
+
+    return {
+      "isBase64Encoded": false,
+      "statusCode": 200,
+      "body": JSON.stringify(event)
+    };
+  } catch (error) {
+    console.error("An hello occurred:", error);
+    return {
+      statusCode: 500,
+      body: JSON.stringify("Internal Server Hello")
+    };
+  }
+}
+EOF
+)
+
+SHCODE=$(cat << EOF
+#!/bin/bash
+
+function handler () {
+  EVENT_DATA=$1
+  echo "Echoing EVENT_DATA #NO: '$EVENT_DATA'" 1>&2;
+
+  ESCAPED=$(echo "$EVENT_DATA" | sed 's/"/\\"/g')
+  RESPONSE="{ \"isBase64Encoded\": false, \"statusCode\": 200, \"body\": \"$ESCAPED\" }"
+  echo $RESPONSE
+}
+EOF
+)
+
 
 START=$(date +%s%N | cut -b1-13)
 #START=1692927000000
@@ -11,10 +49,32 @@ RUNFILE=./tmp/$START-RUN.log
 
 for i in $(seq 1 1 $MAX)
 do
-   echo "Iteration #$i out of #$MAX"
+    echo "Iteration #$i out of #$MAX"
 
-   echo "   Updating lamba"
-   . ./create_lambda.sh >> $RUNFILE
+    echo "$JSCODE" | sed "s/#NO/$i/g" > ./javascript_lambda/index.js
+    echo "$SHCODE" | sed "s/#NO/$i/g" > ./shell_runtime/function.sh
+
+    if [ ! "$DOCKERFILE" = "NA" ]; then
+        echo "   Deleting images"
+        IMAGES=$(aws ecr describe-images --repository-name $IMAGE_REPO_NAME | jq '.imageDetails[] | .imageDigest' | tr -d ' "')
+        echo "$IMAGES" | while read item1; do
+            IMAGE=$item1
+            if [ ! -z "$IMAGE" ]; then
+                aws ecr batch-delete-image --repository-name $IMAGE_REPO_NAME --image-ids "imageDigest=$IMAGE" >> $RUNFILE
+            fi
+        done
+    fi
+
+    LST_FCN=$(aws lambda list-functions | grep "FunctionName" | grep "$LAMBDA_FCN_NAME" | cut -d ':' -f2 |  tr -d '" ,')
+    if [ "$LST_FCN" = "$LAMBDA_FCN_NAME" ]; then
+        aws lambda delete-function --function-name $LAMBDA_FCN_NAME
+    fi
+
+    echo "   Building image"
+    . ./build_image.sh >> $RUNFILE
+
+    echo "   Updating lamba"
+    . ./create_lambda.sh >> $RUNFILE
 
     echo "   Waiting for update to complete"
     aws lambda wait function-updated-v2 --function-name $LAMBDA_FCN_NAME
@@ -25,7 +85,6 @@ do
     sleep $WAIT
 done
 
-sleep $WAIT
 
 END=$(date +%s%N | cut -b1-13)
 #END=1692929847000

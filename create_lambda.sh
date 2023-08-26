@@ -10,15 +10,40 @@ if [ "$DOCKERFILE" = "NA" ]; then
     ZIP_FILE=./$ZIP_DIR/function.zip
     mkdir -p $ZIP_DIR
 
-    chmod +x ./shell_runtime/bootstrap
-    chmod +x ./shell_runtime/function.sh
-    zip -j $ZIP_FILE ./shell_runtime/*
+    if test -f "$FILE"; then
+        rm ./tmp/function.zip
+    fi
 
-    echo "aws lambda create-function --function-name $LAMBDA_FCN_NAME --runtime provided.al2 --package-type Zip --handler function.handler --zip-file fileb://$ZIP_FILE --role arn:aws:iam::$AWS_ACCOUNT_ID:role$IAM_SERVICE_PATH$IAM_ROLE_NAME"
-    aws lambda create-function --function-name $LAMBDA_FCN_NAME --runtime provided.al2 --package-type Zip --handler function.handler --zip-file fileb://$ZIP_FILE --role arn:aws:iam::$AWS_ACCOUNT_ID:role$IAM_SERVICE_PATH$IAM_ROLE_NAME
+    if [ "$RUNTIME_ID" = "provided.al2" ]; then
+        FUNCTION_HANDLER=function.handler
+        chmod +x ./shell_runtime/bootstrap
+        chmod +x ./shell_runtime/function.sh
+        zip -j $ZIP_FILE ./shell_runtime/*
+    else
+        FUNCTION_HANDLER=index.handler
+        zip -j $ZIP_FILE ./javascript_lambda/*
+    fi
+
+    # In case the function  already exists, update the zip file for the function otherwise old code will still execute
+    LST_FCN=$(aws lambda list-functions | grep "FunctionName" | grep "$LAMBDA_FCN_NAME" | cut -d ':' -f2 |  tr -d '" ,')
+    if [ "$LST_FCN" = "$LAMBDA_FCN_NAME" ]; then
+        echo "aws lambda update-function-code --function-name $LAMBDA_FCN_NAME --zip-file fileb://$ZIP_FILE"
+        aws lambda update-function-code --function-name $LAMBDA_FCN_NAME --zip-file fileb://$ZIP_FILE
+    else
+        echo "aws lambda create-function --function-name $LAMBDA_FCN_NAME --runtime $RUNTIME_ID --package-type Zip --handler $FUNCTION_HANDLER --zip-file fileb://$ZIP_FILE --role arn:aws:iam::$AWS_ACCOUNT_ID:role$IAM_SERVICE_PATH$IAM_ROLE_NAME"
+        aws lambda create-function --function-name $LAMBDA_FCN_NAME --runtime $RUNTIME_ID --package-type Zip --handler $FUNCTION_HANDLER --zip-file fileb://$ZIP_FILE --role arn:aws:iam::$AWS_ACCOUNT_ID:role$IAM_SERVICE_PATH$IAM_ROLE_NAME
+    fi
 else
-    echo "aws lambda create-function --function-name $LAMBDA_FCN_NAME --package-type Image --code ImageUri=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG --role arn:aws:iam::$AWS_ACCOUNT_ID:role$IAM_SERVICE_PATH$IAM_ROLE_NAME"
-    aws lambda create-function --function-name $LAMBDA_FCN_NAME --package-type Image --code ImageUri=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG --role arn:aws:iam::$AWS_ACCOUNT_ID:role$IAM_SERVICE_PATH$IAM_ROLE_NAME
+    # In case the function  already exists, update the docker image for the function otherwise old code will still execute
+    LST_FCN=$(aws lambda list-functions | grep "FunctionName" | grep "$LAMBDA_FCN_NAME" | cut -d ':' -f2 |  tr -d '" ,')
+    if [ "$LST_FCN" = "$LAMBDA_FCN_NAME" ]; then
+        echo "aws lambda update-function-code --function-name $LAMBDA_FCN_NAME --image-uri $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG"
+        aws lambda update-function-code --function-name $LAMBDA_FCN_NAME --image-uri $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG
+    else
+        echo "aws lambda create-function --function-name $LAMBDA_FCN_NAME --package-type Image --code ImageUri=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG --role arn:aws:iam::$AWS_ACCOUNT_ID:role$IAM_SERVICE_PATH$IAM_ROLE_NAME"
+        aws lambda create-function --function-name $LAMBDA_FCN_NAME --package-type Image --code ImageUri=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG --role arn:aws:iam::$AWS_ACCOUNT_ID:role$IAM_SERVICE_PATH$IAM_ROLE_NAME
+    fi
+
 
     #aws lambda create-function-url-config --function-name $LAMBDA_FCN_NAME --auth-type NONE
 

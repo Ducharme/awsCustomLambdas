@@ -14,3 +14,8 @@ export DOCKERFILE=Dockerfile_ubuntu
 
 #export PROJECT_NAME=coucou
 #export DOCKERFILE=NA
+#export RUNTIME_ID=provided.al2
+
+#export PROJECT_NAME=howdy
+#export DOCKERFILE=NA
+#export RUNTIME_ID=nodejs18.x

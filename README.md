@@ -1,4 +1,9 @@
 
+# Related information
+
+[How to configure custom docker images for AWS lambda functions (ubuntu with bash/shell & nodejs - Medium article written by me](https://medium.com/@claude.ducharme/how-to-configure-custom-docker-images-for-aws-lambda-functions-ubuntu-with-bash-shell-nodejs-e1d6592c88b3)
+
+
 # Prerequisites
 
 1. AWS CLI v2 configured

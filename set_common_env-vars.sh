@@ -5,9 +5,10 @@
 AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
 AWS_DEFAULT_REGION=$(aws configure get region)
 
-# Lambda variable
+# Lambda variable, memory should be between 128 and 3008
 LAMBDA_FCN_NAME=$PROJECT_NAME-lambda
 LAMBDA_LOG_GROUP=/aws/lambda/$LAMBDA_FCN_NAME
+LAMBDA_MEM_SIZE=128
 
 # ECR & docker image variables
 IMAGE_REPO_NAME=$PROJECT_NAME-repo

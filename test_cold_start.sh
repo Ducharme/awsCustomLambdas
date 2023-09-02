@@ -47,6 +47,8 @@ START=$(date +%s%N | cut -b1-13)
 #START=1692927000000
 RUNFILE=./tmp/$START-RUN.log
 
+echo "Region is $AWS_DEFAULT_REGION" >> $RUNFILE
+
 for i in $(seq 1 1 $MAX)
 do
     echo "Iteration #$i out of #$MAX"
@@ -56,13 +58,16 @@ do
 
     if [ ! "$DOCKERFILE" = "NA" ]; then
         echo "   Deleting images"
-        IMAGES=$(aws ecr describe-images --repository-name $IMAGE_REPO_NAME | jq '.imageDetails[] | .imageDigest' | tr -d ' "')
-        echo "$IMAGES" | while read item1; do
-            IMAGE=$item1
-            if [ ! -z "$IMAGE" ]; then
-                aws ecr batch-delete-image --repository-name $IMAGE_REPO_NAME --image-ids "imageDigest=$IMAGE" >> $RUNFILE
-            fi
-        done
+        REPO_NAMES=$(aws ecr describe-repositories | grep "repositoryName" | grep "$IMAGE_REPO_NAME" | cut -d ':' -f2 |  tr -d '" ')
+        if [ ! -z "$REPO_NAMES" ]; then
+            IMAGES=$(aws ecr describe-images --repository-name $IMAGE_REPO_NAME | jq '.imageDetails[] | .imageDigest' | tr -d ' "')
+            echo "$IMAGES" | while read item1; do
+                IMAGE=$item1
+                if [ ! -z "$IMAGE" ]; then
+                    aws ecr batch-delete-image --repository-name $IMAGE_REPO_NAME --image-ids "imageDigest=$IMAGE" >> $RUNFILE
+                fi
+            done
+        fi
     fi
 
     LST_FCN=$(aws lambda list-functions | grep "FunctionName" | grep "$LAMBDA_FCN_NAME" | cut -d ':' -f2 |  tr -d '" ,')
@@ -72,6 +77,9 @@ do
 
     echo "   Building image"
     . ./build_image.sh >> $RUNFILE
+
+    echo "   Creating role"
+    . ./create_role.sh >> $RUNFILE
 
     echo "   Updating lamba"
     . ./create_lambda.sh >> $RUNFILE

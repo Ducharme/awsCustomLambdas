@@ -25,11 +25,17 @@
 6. `sh create_api.sh`
 
 
-# Test
+# Single test in your current region
 
 6. `sh run_container_locally.sh` Note: Only for functions using docker image
 7. `sh run_function_remotely.sh`
 8. `sh run_function_from_apigw.sh`
+
+
+# Global test accross multiple regions
+
+9. `sh test_cold_start_by_region.sh`
+10. `sh run_function_by_region.sh`
 
 
 # Clean up
